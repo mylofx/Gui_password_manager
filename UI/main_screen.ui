@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Password_manager</string>
   </property>
-  <widget class="QPushButton" name="Add_button">
+  <widget class="QPushButton" name="add_button">
    <property name="geometry">
     <rect>
      <x>240</x>
@@ -34,10 +34,10 @@
   <widget class="QLineEdit" name="login_text">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>90</y>
+     <x>70</x>
+     <y>100</y>
      <width>211</width>
-     <height>32</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -47,10 +47,10 @@
   <widget class="QLineEdit" name="password_text">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>130</y>
+     <x>70</x>
+     <y>140</y>
      <width>211</width>
-     <height>32</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -112,7 +112,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>20</y>
+     <y>0</y>
      <width>281</width>
      <height>41</height>
     </rect>
@@ -127,6 +127,40 @@
    </property>
    <property name="text">
     <string>Password Manager v.01</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="name_text">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>60</y>
+     <width>211</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="name_label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>60</y>
+     <width>41</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Inconsolata Condensed Black</family>
+     <pointsize>14</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Name:</string>
    </property>
   </widget>
  </widget>
