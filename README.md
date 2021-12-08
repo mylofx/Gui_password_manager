@@ -6,4 +6,6 @@ Now it's not completed. Things that works are only:
 *pimitive gui
 *adding paswords to sqlite3 db
 *showing saved passwords
-I am planning to add more feature like generating passwords etc.
+*editing existing passwords
+
+I am planning to add more features like generating passwords etc.

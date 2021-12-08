@@ -203,6 +203,9 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="text">
+    <string>Type something to search...</string>
+   </property>
   </widget>
  </widget>
  <resources/>
