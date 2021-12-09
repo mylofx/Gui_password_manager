@@ -3,9 +3,10 @@
 
 This is a simple gui password manager i write to learn how to use Pqt5.
 Now it's not completed. Things that works are only:
-*pimitive gui
-*adding paswords to sqlite3 db
-*showing saved passwords
-*editing existing passwords
+*pimitive gui;
+*adding paswords to sqlite3 db;
+*showing saved passwords;
+*editing existing passwords;
+*searching passwords
 
 I am planning to add more features like generating passwords etc.
