@@ -194,19 +194,6 @@
     <string>Add..</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="search_text">
-   <property name="geometry">
-    <rect>
-     <x>70</x>
-     <y>280</y>
-     <width>521</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Type something to search...</string>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections/>

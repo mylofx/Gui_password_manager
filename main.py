@@ -1,13 +1,26 @@
 import sys
 import sqlite3
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal, QRect
 from PyQt5.QtWidgets import QDialog, QApplication, QMessageBox
 from PyQt5.uic import loadUi
 
 con = sqlite3.connect('passwords.s3db')
 cur = con.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS passwords (name text, login text, password text)")
+
+class SearchLine(QtWidgets.QLineEdit):
+    def focusInEvent(self, event):
+        print("in")
+        if self.text() == "Type something to search...":
+            self.clear()
+        super().focusInEvent(event)
+
+    def focusOutEvent(self, event):
+        print("out")
+        if not self.text():
+            self.setText("Type something to search...")
+        super().focusOutEvent(event)
 
 
 class MainScreen(QDialog):
@@ -16,6 +29,7 @@ class MainScreen(QDialog):
         loadUi('UI/main_screen.ui', self)
         self.add_button.clicked.connect(self.add_password)
         self.show_button.clicked.connect(self.go_to_show_passwords)
+        self.password_text.setEchoMode(QtWidgets.QLineEdit.Password)
 
     def add_password(self):
         cur.execute("INSERT INTO passwords(name, login, password) VALUES(?, ?, ?)", (self.name_text.text(), self.login_text.text(), self.password_text.text()))
@@ -46,11 +60,18 @@ class PasswordListScreen(QDialog):
         self.edit_on = False
         self.load_data_to_table()
         self.edit_button.clicked.connect(self.edit)
+        self.search_text = SearchLine(self)
+        self.search_text.setObjectName(u"search_text")
+        self.search_text.setGeometry(QRect(70, 280, 521, 21))
+        self.search_text.textEdited.connect(self.search)
+        self.s_by_login_checkbox.stateChanged.connect(self.checked)
+        self.s_by_password_checkbox.stateChanged.connect(self.checked)
 
     def load_data_to_table(self):
         cur.execute("select * from passwords")
         self.all_data = cur.fetchall()
         self.tableWidget.setRowCount(len(self.all_data))
+
         i = 0
 
         for row in self.all_data:
@@ -89,8 +110,32 @@ class PasswordListScreen(QDialog):
             self.edit_on = False
             self.edit_button.setText("Edit")
 
-        def search():
-            pass
+    def search(self):
+        self.tableWidget.clear()
+        z = 0
+        if self.s_by_login_checkbox.isChecked():
+            search_mode = 1
+        elif self.s_by_password_checkbox.isChecked():
+            search_mode = 2
+        else:
+            search_mode = 0
+
+        for i in self.all_data:
+            if i[search_mode] == self.search_text.text():
+                self.tableWidget.insertRow(self.tableWidget.rowCount())
+                self.tableWidget.setItem(z, 0, QtWidgets.QTableWidgetItem(i[0]))
+                self.tableWidget.setItem(z, 1, QtWidgets.QTableWidgetItem(i[1]))
+                self.tableWidget.setItem(z, 2, QtWidgets.QTableWidgetItem(i[2]))
+                z += 1
+
+    def checked(self):
+        if self.s_by_password_checkbox.isChecked():
+            self.s_by_login_checkbox.setEnabled(False)
+        elif self.s_by_login_checkbox.isChecked():
+            self.s_by_password_checkbox.setEnabled(False)
+        else:
+            self.s_by_password_checkbox.setEnabled(True)
+            self.s_by_login_checkbox.setEnabled(True)
 
 
 app = QApplication(sys.argv)
