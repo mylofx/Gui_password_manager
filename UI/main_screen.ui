@@ -40,6 +40,11 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Inconsolata Condensed</family>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true"/>
    </property>
@@ -52,6 +57,11 @@
      <width>211</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Inconsolata Condensed</family>
+    </font>
    </property>
   </widget>
   <widget class="QLabel" name="login_label">
@@ -138,8 +148,16 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Inconsolata Condensed</family>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true"/>
+   </property>
+   <property name="clearButtonEnabled">
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QLabel" name="name_label">

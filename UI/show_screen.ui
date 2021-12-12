@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>show passwords</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QTableWidget" name="tableWidget">
    <property name="geometry">
     <rect>
@@ -36,10 +39,11 @@
    </property>
    <property name="font">
     <font>
-     <family>Inconsolata Condensed Bold</family>
+     <family>Inconsolata Condensed Black</family>
      <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>11</weight>
+     <italic>false</italic>
+     <bold>false</bold>
     </font>
    </property>
    <property name="mouseTracking">
@@ -52,7 +56,9 @@
     <bool>false</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">background-color: rgba(0, 0, 0, 0);
+font: 87 12pt &quot;Inconsolata Condensed Black&quot;;
+selection-background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(85, 85, 255, 255));</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
@@ -70,6 +76,13 @@
       <underline>true</underline>
      </font>
     </property>
+    <property name="background">
+     <color alpha="0">
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+    </property>
    </column>
    <column>
     <property name="text">
@@ -83,6 +96,13 @@
       <bold>false</bold>
      </font>
     </property>
+    <property name="background">
+     <color alpha="0">
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
+    </property>
    </column>
    <column>
     <property name="text">
@@ -95,6 +115,13 @@
       <weight>50</weight>
       <bold>false</bold>
      </font>
+    </property>
+    <property name="background">
+     <color alpha="0">
+      <red>0</red>
+      <green>0</green>
+      <blue>0</blue>
+     </color>
     </property>
    </column>
   </widget>
@@ -133,6 +160,9 @@
      <family>Inconsolata Condensed Light</family>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
     <string>Edit</string>
    </property>
@@ -150,6 +180,9 @@
     <font>
      <family>Inconsolata Condensed Light</family>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
    <property name="text">
     <string>Remove</string>
@@ -169,6 +202,9 @@
      <family>Inconsolata Condensed</family>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
     <string>search by login</string>
    </property>
@@ -187,6 +223,9 @@
      <family>Inconsolata Condensed</family>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
     <string>search by password</string>
    </property>
@@ -204,6 +243,9 @@
     <font>
      <family>Inconsolata Condensed Light</family>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
    <property name="text">
     <string>Add..</string>

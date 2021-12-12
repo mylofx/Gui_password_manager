@@ -12,7 +12,7 @@ cur.execute("CREATE TABLE IF NOT EXISTS passwords (name text, login text, passwo
 
 class SearchLine(QtWidgets.QLineEdit):
     """Reinterpretation of class QLineEdit
-    to add specjal behaviour on focus event
+    to add special behaviour on focus event
     to make better search text field
     """
     def focusInEvent(self, event):
@@ -52,7 +52,7 @@ class MainScreen(QDialog):
         QMessageBox.information(self, 'Success!', "Successfully added!", QMessageBox.Ok)
 
     def go_to_show_passwords(self):
-        """Fuction thats changes screen
+        """Fuction that changes screen
         """
         show_screen = PasswordListScreen()
         widget.addWidget(show_screen)
@@ -67,22 +67,24 @@ class PasswordListScreen(QDialog):
     def __init__(self):
         super().__init__()
         loadUi('UI/show_screen.ui', self)
-        self.tableWidget.setColumnWidth(0, 200)     # increase
-        self.tableWidget.setColumnWidth(1, 200)     # columns
-        self.tableWidget.setColumnWidth(2, 200)     # size
+        self.tableWidget.setColumnWidth(0, 210)     # increase
+        self.tableWidget.setColumnWidth(1, 210)     # columns
+        self.tableWidget.setColumnWidth(2, 210)     # size
         self.table_w = []   # variable which store table widgets to allow us edit flags like: Qt.ItemIsEditable etc.
         self.edited_data = []   # variable which store edited date which wasn't yet added to database
         self.all_data = []  # variable which store the actual data
         self.edit_on = False    # flag to tell it Edit mode is on
-        self.load_data_to_table()
         self.search_text = SearchLine(self)                     # making
         self.search_text.setObjectName(u"search_text")          # a magic search LineEdit
         self.search_text.setGeometry(QRect(70, 280, 521, 21))   # from a my own class that inherit from QLineEdit class
+        self.search_text.setText("Type something to search...")
         self.edit_button.clicked.connect(self.edit)
         self.add_button.clicked.connect(self.add)
+        self.remove_button.clicked.connect(self.remove)
         self.search_text.textEdited.connect(self.search)
         self.s_by_login_checkbox.stateChanged.connect(self.checked)
         self.s_by_password_checkbox.stateChanged.connect(self.checked)
+        self.load_data_to_table()
 
     def load_data_to_table(self):
         """Function that loading data from the db,
@@ -109,10 +111,14 @@ class PasswordListScreen(QDialog):
             self.table_w[i][2].setFlags(self.table_w[i][2].flags() | Qt.ItemIsSelectable)
             self.table_w[i][2].setFlags(self.table_w[i][2].flags() & ~ Qt.ItemIsEditable)
             i += 1
+        self.tableWidget.verticalHeader().hide()
+        self.tableWidget.horizontalHeader().setStyleSheet("QHeaderView::section { background-color: blue; font: 87 12pt \"Inconsolata Condensed Black\"; }");
 
     def edit(self):
         """functions that edits data and update the db
         """
+        if not self.all_data:
+            return
         if not self.edit_on:
             for i in range(len(self.table_w)):
                 self.table_w[i][0].setFlags(self.table_w[i][0].flags() | Qt.ItemIsEditable)
@@ -164,6 +170,7 @@ class PasswordListScreen(QDialog):
                 self.tableWidget.setItem(z, 1, self.table_w[z][1])
                 self.tableWidget.setItem(z, 2, self.table_w[z][2])
                 z += 1
+        self.tableWidget.setHorizontalHeaderLabels("Name;Login;Password".split(";"))
 
 
     def checked(self):
@@ -180,8 +187,21 @@ class PasswordListScreen(QDialog):
             self.s_by_login_checkbox.setEnabled(True)
 
     def remove(self):
-        """Will be a function to remove data from db"""
-        pass
+        if self.edit_on or not self.all_data:
+            return
+
+        rows = set()
+        """Function that remove data from db and form tableWidget
+        """
+        for item in self.tableWidget.selectedItems():
+            row = item.row()
+            rows.add(row)
+            cur.execute("DELETE FROM passwords WHERE name = ? and login = ? and password = ? ", (self.table_w[row][0].text(), self.table_w[row][1].text(), self.table_w[row][2].text()))
+        for r in rows:
+            self.tableWidget.removeRow(row)
+        con.commit()
+        cur.execute("SELECT * FROM passwords")
+        self.all_data = cur.fetchall()
 
     def add(self):
         """Will be a functions that allows to add data from show passwords screen,
@@ -194,6 +214,13 @@ class PasswordListScreen(QDialog):
 
 
 app = QApplication(sys.argv)
+app.setStyleSheet("QLineEdit {background-color: rgba(0, 0, 0, 0); font: 87 12pt \"Inconsolata Condensed Black\";; }"
+                  "QTableWidgetItem {background-color: rgba(0, 0, 0, 0);;;}"
+                  "QWidget#Password_manager{background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(64, 83, 255, 255), stop:1 rgba(179, 199, 255, 255));}"
+                  "QWidget#show_passowrds{ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(64, 83, 255, 255), stop:1 rgba(179, 199, 255, 255));}"
+                  "QPushButton {background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(85, 85, 255, 255));}"
+                  "QCheckBox {color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(85, 85, 255, 255));}")
+
 main_screen = MainScreen()
 widget = QtWidgets.QStackedWidget()
 widget.addWidget(main_screen)
