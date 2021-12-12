@@ -8,5 +8,6 @@ Now it's not completed. Things that works are only:
 *showing saved passwords;
 *editing existing passwords;
 *searching passwords
+*removing existing passwords;
 
 I am planning to add more features like generating passwords etc.
