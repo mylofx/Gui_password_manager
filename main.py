@@ -1,5 +1,7 @@
 import sys
 import sqlite3
+import random
+
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtWidgets import QDialog, QApplication, QMessageBox
@@ -31,25 +33,48 @@ class SearchLine(QtWidgets.QLineEdit):
 
 
 class MainScreen(QDialog):
-    """Class that owns main screen UI
+    """Class that own main screen UI
     """
     def __init__(self):
         super().__init__()
         loadUi('UI/main_screen.ui', self)
         self.add_button.clicked.connect(self.add_password)
+        self.pass_gen_button.clicked.connect(self.generate_password)
         self.show_button.clicked.connect(self.go_to_show_passwords)
         self.password_text.setEchoMode(QtWidgets.QLineEdit.Password)
+
 
     def add_password(self):
         """Function that adds password data to db.
         """
+        self.name_tmp, self.login_tmp, self.password_tmp = encrypt_lpn(self.name_text.text(), self.login_text.text(), self.password_text.text())
         cur.execute("INSERT INTO passwords(name, login, password) VALUES(?, ?, ?)",
-                    (self.name_text.text(), self.login_text.text(), self.password_text.text()))
+                    (self.name_tmp, self.login_tmp, self.password_tmp))
         self.name_text.clear()
         self.login_text.clear()
         self.password_text.clear()
         con.commit()
         QMessageBox.information(self, 'Success!', "Successfully added!", QMessageBox.Ok)
+
+    def generate_password(self, num_of_characters=16, num_of_upper_char=3, num_of_specjal_char=3, num_of_numbers=2):
+        num_of_normal_char = abs(num_of_characters - (num_of_numbers + num_of_specjal_char + num_of_upper_char))
+        password = ""
+        specjal_char = "!@#$%^&*()_-,./?\|;:[]{}'\""
+        upper_char = 'QWERTYUIOPASDFGHJKLZXCVBNM'
+        cyfry = '123456789'
+        normal_char = 'qwertyuiopasdfghjklzxcvbnm'
+        for i in range(num_of_upper_char):
+            password += random.choice(upper_char)
+        for i in range(num_of_specjal_char):
+            password += random.choice(specjal_char)
+        for i in range(num_of_numbers):
+            password += random.choice(cyfry)
+        for i in range(num_of_normal_char):
+            password += random.choice(normal_char)
+        password = list(password)
+        random.shuffle(password)
+        password = "".join(password)
+        self.password_text.setText(password)
 
     def go_to_show_passwords(self):
         """Fuction that changes screen
@@ -99,8 +124,8 @@ class PasswordListScreen(QDialog):
         i = 0
 
         for row in self.all_data:
-            self.table_w.append((QtWidgets.QTableWidgetItem(row[0]), QtWidgets.QTableWidgetItem(row[1]),
-                                 QtWidgets.QTableWidgetItem(row[2])))
+            self.table_w.append((QtWidgets.QTableWidgetItem(encrypt_lpn(row[0])), QtWidgets.QTableWidgetItem(encrypt_lpn(row[1])),
+                                 QtWidgets.QTableWidgetItem(encrypt_lpn(row[2]))))
             self.tableWidget.setItem(i, 0, self.table_w[i][0])
             self.table_w[i][0].setFlags(self.table_w[i][0].flags() | Qt.ItemIsSelectable)
             self.table_w[i][0].setFlags(self.table_w[i][0].flags() & ~ Qt.ItemIsEditable)
@@ -138,7 +163,7 @@ class PasswordListScreen(QDialog):
                 self.edited_data.append((self.table_w[i][0].text(), self.table_w[i][1].text(),
                                          self.table_w[i][2].text()))
                 if self.all_data[i][0] != self.edited_data[i][0] or self.all_data[i][1] != self.edited_data[i][1] or self.all_data[i][2] != self.edited_data[i][2]:
-                    cur.execute("UPDATE passwords SET name = ?, login = ?, password = ? WHERE name = ? and login = ? and password = ?",(self.edited_data[i][0],  self.edited_data[i][1], self.edited_data[i][2], self.all_data[i][0], self.all_data[i][1], self.all_data[i][2]))
+                    cur.execute("UPDATE passwords SET name = ?, login = ?, password = ? WHERE name = ? and login = ? and password = ?",(encrypt_lpn(self.edited_data[i][0]),  encrypt_lpn(self.edited_data[i][1]), encrypt_lpn(self.edited_data[i][2]), encrypt_lpn(self.all_data[i][0]), encrypt_lpn(self.all_data[i][1]), encrypt_lpn(self.all_data[i][2])))
                     con.commit()
             cur.execute("SELECT * FROM passwords")
             self.all_data = cur.fetchall()
@@ -196,7 +221,7 @@ class PasswordListScreen(QDialog):
         for item in self.tableWidget.selectedItems():
             row = item.row()
             rows.add(row)
-            cur.execute("DELETE FROM passwords WHERE name = ? and login = ? and password = ? ", (self.table_w[row][0].text(), self.table_w[row][1].text(), self.table_w[row][2].text()))
+            cur.execute("DELETE FROM passwords WHERE name = ? and login = ? and password = ? ", (encrypt_lpn(self.table_w[row][0].text()), encrypt_lpn(self.table_w[row][1].text()), encrypt_lpn(self.table_w[row][2].text())))
         for r in rows:
             self.tableWidget.removeRow(row)
         con.commit()
@@ -211,6 +236,19 @@ class PasswordListScreen(QDialog):
         widget.removeWidget(self)
         widget.setFixedHeight(280)
         widget.setFixedWidth(380)
+
+
+def encrypt_lpn(*args):
+    """Function that encrypt passwords and logins"""
+
+    def encrypt(to_encrypt, key=542181):
+        encrypted_text = ''
+        for i in to_encrypt:
+            encrypted_text += chr(ord(i) ^ key)
+        return encrypted_text
+
+    return (encrypt(text) for text in args)if len(args) > 1 else encrypt(args[0])
+
 
 
 app = QApplication(sys.argv)
