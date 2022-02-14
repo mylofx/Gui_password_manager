@@ -9,5 +9,9 @@ Now it's not completed. Things that works are only:
 *editing existing passwords;
 *searching passwords
 *removing existing passwords;
+*generating peudorandom passwords
+*encrypting passwords with xor
 
 I am planning to add more features like generating passwords etc.
+
+![image](https://user-images.githubusercontent.com/75095641/153949403-61b5662f-b78d-424c-875b-809983ad2795.png)
